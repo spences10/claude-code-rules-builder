@@ -115,6 +115,7 @@ src/
    - Generic web app template
 
 3. **Template structure** (following research patterns)
+
    ```markdown
    # Project Name
 
