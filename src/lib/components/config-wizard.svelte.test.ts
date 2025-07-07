@@ -1,8 +1,8 @@
-import { describe, expect, it, beforeEach } from 'vitest';
-import { render } from 'vitest-browser-svelte';
 import { page } from '@vitest/browser/context';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { render } from 'vitest-browser-svelte';
+import { config_state, reset_config } from '../state/config.svelte';
 import ConfigWizard from './config-wizard.svelte';
-import { reset_config, config_state } from '../state/config.svelte.js';
 
 describe('ConfigWizard component', () => {
 	beforeEach(() => {
@@ -12,12 +12,16 @@ describe('ConfigWizard component', () => {
 	it('should render first step with project basics form', async () => {
 		render(ConfigWizard);
 
-		await expect.element(page.getByText('Configure Your CLAUDE.md')).toBeInTheDocument();
-		await expect.element(page.getByRole('heading', { name: 'Project Basics' })).toBeInTheDocument();
-		
+		await expect
+			.element(page.getByText('Configure Your CLAUDE.md'))
+			.toBeInTheDocument();
+		await expect
+			.element(page.getByRole('heading', { name: 'Project Basics' }))
+			.toBeInTheDocument();
+
 		const project_name_input = page.getByLabelText('Project Name *');
 		await expect.element(project_name_input).toBeInTheDocument();
-		
+
 		const project_type_select = page.getByLabelText('Project Type *');
 		await expect.element(project_type_select).toBeInTheDocument();
 	});
@@ -25,7 +29,9 @@ describe('ConfigWizard component', () => {
 	it('should show step progress indicators', async () => {
 		render(ConfigWizard);
 
-		await expect.element(page.getByText('Step 1 of 5')).toBeInTheDocument();
+		await expect
+			.element(page.getByText('Step 1 of 5'))
+			.toBeInTheDocument();
 	});
 
 	it('should disable next button when required fields are empty', async () => {
@@ -54,14 +60,22 @@ describe('ConfigWizard component', () => {
 		const next_button = page.getByRole('button', { name: /Next →/ });
 		await next_button.click();
 
-		await expect.element(page.getByRole('heading', { name: 'Tech Stack Selection' })).toBeInTheDocument();
-		await expect.element(page.getByText('Step 2 of 5')).toBeInTheDocument();
+		await expect
+			.element(
+				page.getByRole('heading', { name: 'Tech Stack Selection' }),
+			)
+			.toBeInTheDocument();
+		await expect
+			.element(page.getByText('Step 2 of 5'))
+			.toBeInTheDocument();
 	});
 
 	it('should disable previous button on first step', async () => {
 		render(ConfigWizard);
 
-		const previous_button = page.getByRole('button', { name: /← Previous/ });
+		const previous_button = page.getByRole('button', {
+			name: /← Previous/,
+		});
 		await expect.element(previous_button).toBeDisabled();
 	});
 
@@ -75,7 +89,9 @@ describe('ConfigWizard component', () => {
 		const next_button = page.getByRole('button', { name: /Next →/ });
 		await next_button.click();
 
-		const previous_button = page.getByRole('button', { name: /← Previous/ });
+		const previous_button = page.getByRole('button', {
+			name: /← Previous/,
+		});
 		await expect.element(previous_button).toBeEnabled();
 	});
 
@@ -90,11 +106,17 @@ describe('ConfigWizard component', () => {
 		await next_button.click();
 
 		// Go back
-		const previous_button = page.getByRole('button', { name: /← Previous/ });
+		const previous_button = page.getByRole('button', {
+			name: /← Previous/,
+		});
 		await previous_button.click();
 
-		await expect.element(page.getByRole('heading', { name: 'Project Basics' })).toBeInTheDocument();
-		await expect.element(page.getByText('Step 1 of 5')).toBeInTheDocument();
+		await expect
+			.element(page.getByRole('heading', { name: 'Project Basics' }))
+			.toBeInTheDocument();
+		await expect
+			.element(page.getByText('Step 1 of 5'))
+			.toBeInTheDocument();
 	});
 
 	it('should update config state when form fields change', async () => {
@@ -114,7 +136,9 @@ describe('ConfigWizard component', () => {
 	it('should show step counter', async () => {
 		render(ConfigWizard);
 
-		await expect.element(page.getByText('Step 1 of 5')).toBeInTheDocument();
+		await expect
+			.element(page.getByText('Step 1 of 5'))
+			.toBeInTheDocument();
 
 		// Advance to step 2
 		const project_name_input = page.getByLabelText('Project Name *');
@@ -123,16 +147,20 @@ describe('ConfigWizard component', () => {
 		const next_button = page.getByRole('button', { name: /Next →/ });
 		await next_button.click();
 
-		await expect.element(page.getByText('Step 2 of 5')).toBeInTheDocument();
+		await expect
+			.element(page.getByText('Step 2 of 5'))
+			.toBeInTheDocument();
 	});
 
 	it('should show generate button on final step', async () => {
 		render(ConfigWizard);
-		
+
 		// Mock advancing to final step
 		config_state.current_step = 4;
 		config_state.project_name = 'Test Project';
 
-		await expect.element(page.getByRole('button', { name: /Generate/ })).toBeInTheDocument();
+		await expect
+			.element(page.getByRole('button', { name: /Generate/ }))
+			.toBeInTheDocument();
 	});
 });

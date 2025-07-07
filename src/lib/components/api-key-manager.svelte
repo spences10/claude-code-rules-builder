@@ -2,14 +2,13 @@
 	import {
 		api_key_ui_state,
 		clear_api_key_error,
-		reset_api_key_ui_state,
+		clear_api_key_success,
 		set_api_key_error,
 		set_api_key_success,
-		clear_api_key_success,
 		set_test_result,
 		set_testing_state,
-	} from '../state/api-key.svelte.js';
-	import { api_key_manager } from '../utils/api-key-manager.js';
+	} from '../state/api-key.svelte';
+	import { api_key_manager } from '../utils/api-key-manager';
 
 	let api_key = $state('');
 	let is_visible = $state(false);
@@ -56,7 +55,9 @@
 				set_test_result('success');
 			} else {
 				set_test_result('error');
-				set_api_key_error('API key test failed. Check browser console for details.');
+				set_api_key_error(
+					'API key test failed. Check browser console for details.',
+				);
 			}
 		} catch (err) {
 			set_test_result('error');

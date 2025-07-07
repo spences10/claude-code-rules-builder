@@ -1,5 +1,3 @@
-import { AnthropicAPI } from './anthropic-api.js';
-
 interface ApiKeyState {
 	has_key: boolean;
 	key_hash?: string;
@@ -22,6 +20,14 @@ function create_api_key_state(api_key: string): ApiKeyState {
 		key_hash: hash_api_key(api_key),
 		last_used: new Date(),
 	};
+}
+
+function validate_api_key(api_key: string): boolean {
+	return api_key.startsWith('sk-ant-') && api_key.length > 20;
+}
+
+function sanitize_api_key(api_key: string): string {
+	return api_key.trim();
 }
 
 function save_api_key_state(state: ApiKeyState): void {
@@ -80,7 +86,6 @@ export class ApiKeyManager {
 	static readonly STATE_KEY = 'claude-generator-api-state';
 	private static instance: ApiKeyManager;
 	private api_key: string | null = null;
-	private anthropic_api: AnthropicAPI | null = null;
 
 	private constructor() {}
 
@@ -92,16 +97,15 @@ export class ApiKeyManager {
 	}
 
 	set_api_key(api_key: string): boolean {
-		const clean_key = AnthropicAPI.sanitize_api_key(api_key);
+		const clean_key = sanitize_api_key(api_key);
 
-		if (!AnthropicAPI.validate_api_key(clean_key)) {
+		if (!validate_api_key(clean_key)) {
 			throw new Error(
 				'Invalid API key format. Anthropic API keys should start with "sk-ant-"',
 			);
 		}
 
 		this.api_key = clean_key;
-		this.anthropic_api = new AnthropicAPI(clean_key);
 
 		const state = create_api_key_state(clean_key);
 		save_api_key_state(state);
@@ -113,17 +117,12 @@ export class ApiKeyManager {
 		return this.api_key;
 	}
 
-	get_api(): AnthropicAPI | null {
-		return this.anthropic_api;
-	}
-
 	has_api_key(): boolean {
 		return this.api_key !== null;
 	}
 
 	clear_api_key(): void {
 		this.api_key = null;
-		this.anthropic_api = null;
 		clear_api_key_state();
 	}
 

@@ -11,6 +11,7 @@ Unbreakable Rules:
 - Ultra think through problems before taking the hacky solution
 - Use real schemas/types in tests, never redefine them
 - Use DaisyUI components and classes for all UI styling
-- Prefer semantic DaisyUI component classes over raw Tailwind utilities
+- Prefer semantic DaisyUI component classes over raw Tailwind
+  utilities
 
 ---

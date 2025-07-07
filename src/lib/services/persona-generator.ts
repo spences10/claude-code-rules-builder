@@ -1,5 +1,4 @@
-import { api_key_manager } from '../utils/api-key-manager.js';
-import { AnthropicAPIError } from '../utils/anthropic-api.js';
+import { api_key_manager } from '../utils/api-key-manager';
 
 export interface PersonaGenerationRequest {
 	project_name: string;
@@ -211,8 +210,8 @@ export class PersonaGeneratorService {
 	async generate_persona_system(
 		request: PersonaGenerationRequest,
 	): Promise<PersonaGenerationResult> {
-		const api = api_key_manager.get_api();
-		if (!api) {
+		const api_key = api_key_manager.get_api_key();
+		if (!api_key) {
 			return {
 				success: false,
 				error:
@@ -227,28 +226,38 @@ export class PersonaGeneratorService {
 			const persona_requirements =
 				build_persona_requirements(request);
 
-			const content = await api.generate_persona_system(
-				project_context,
-				persona_requirements,
-			);
+			const response = await fetch('/api/generate-persona', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					api_key,
+					prompt: project_context,
+					system_prompt: persona_requirements,
+				}),
+			});
+
+			const data = await response.json();
 			const generation_time = Date.now() - start_time;
+
+			if (!data.success) {
+				return {
+					success: false,
+					error: data.error || 'Generation failed',
+				};
+			}
 
 			return {
 				success: true,
-				content,
+				content: data.content,
 				metadata: {
-					tokens_used: 0,
+					tokens_used: data.usage?.total_tokens || 0,
 					generation_time,
-					persona_count: estimate_persona_count(content),
+					persona_count: estimate_persona_count(data.content),
 				},
 			};
 		} catch (error) {
-			if (error instanceof AnthropicAPIError) {
-				return {
-					success: false,
-					error: `API Error: ${error.message}`,
-				};
-			}
 			return {
 				success: false,
 				error: `Generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -256,84 +265,7 @@ export class PersonaGeneratorService {
 		}
 	}
 
-	async enhance_persona_system(
-		existing_persona: string,
-		enhancement_request: string,
-	): Promise<PersonaGenerationResult> {
-		const api = api_key_manager.get_api();
-		if (!api) {
-			return {
-				success: false,
-				error:
-					'No API key configured. Please set your Anthropic API key first.',
-			};
-		}
-
-		const start_time = Date.now();
-
-		try {
-			const content = await api.enhance_persona(
-				existing_persona,
-				enhancement_request,
-			);
-			const generation_time = Date.now() - start_time;
-
-			return {
-				success: true,
-				content,
-				metadata: {
-					tokens_used: 0,
-					generation_time,
-					persona_count: estimate_persona_count(content),
-				},
-			};
-		} catch (error) {
-			if (error instanceof AnthropicAPIError) {
-				return {
-					success: false,
-					error: `API Error: ${error.message}`,
-				};
-			}
-			return {
-				success: false,
-				error: `Enhancement failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-			};
-		}
-	}
-
-	async validate_persona_system(
-		persona_system: string,
-	): Promise<PersonaValidationResult> {
-		const api = api_key_manager.get_api();
-		if (!api) {
-			return {
-				is_valid: false,
-				issues: ['No API key configured'],
-				suggestions: ['Please set your Anthropic API key first'],
-				score: 0,
-			};
-		}
-
-		try {
-			const validation =
-				await api.validate_persona_system(persona_system);
-			const score = calculate_validation_score(validation);
-
-			return {
-				...validation,
-				score,
-			};
-		} catch (error) {
-			return {
-				is_valid: false,
-				issues: [
-					`Validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-				],
-				suggestions: ['Please try validation again'],
-				score: 0,
-			};
-		}
-	}
+	// TODO: Implement enhance_persona_system and validate_persona_system with SvelteKit API routes
 
 	get_persona_system_templates(): Array<{
 		id: string;
