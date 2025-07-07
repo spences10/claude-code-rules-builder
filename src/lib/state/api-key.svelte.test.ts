@@ -1,12 +1,12 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
 	api_key_ui_state,
-	set_api_key_error,
 	clear_api_key_error,
-	set_testing_state,
-	set_test_result,
 	reset_api_key_ui_state,
-} from './api-key.svelte.js';
+	set_api_key_error,
+	set_test_result,
+	set_testing_state,
+} from './api-key.svelte';
 
 describe('api-key state management', () => {
 	beforeEach(() => {

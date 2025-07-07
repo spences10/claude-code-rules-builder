@@ -7,280 +7,216 @@
 - **Frontend**: SvelteKit with Svelte 5 runes
 - **Styling**: TailwindCSS 4.0 with DaisyUI 5.0
 - **State Management**: Global state file with `$state` rune
-- **Icons**: Individual Svelte components in `src/lib/icons/`
+- **AI Integration**: Anthropic API for CLAUDE.md generation
 - **Storage**: Browser localStorage for drafts and preferences
-- **Deployment**: Static hosting compatible (no server required)
+- **Deployment**: Static hosting compatible
 
 ### Project Structure
 
 ```
 src/
 ├── lib/
-│   ├── stores/
+│   ├── state/
 │   │   └── config.svelte.ts          # Global state management
 │   ├── components/
-│   │   ├── ConfigWizard.svelte       # Multi-step configuration
-│   │   ├── TemplateLibrary.svelte    # Template selection
-│   │   ├── PreviewPanel.svelte       # Real-time CLAUDE.md preview
-│   │   └── ExportOptions.svelte      # Download and copy options
-│   ├── templates/
-│   │   ├── index.ts                  # Template registry
-│   │   ├── react-typescript.ts       # React + TypeScript template
-│   │   ├── nextjs.ts                 # Next.js template
-│   │   ├── python.ts                 # Python project template
-│   │   └── svelte.ts                 # SvelteKit template
+│   │   ├── config-wizard.svelte      # Conversational configuration
+│   │   ├── preview-panel.svelte      # Real-time CLAUDE.md preview
+│   │   └── export-options.svelte     # Download and copy options
+│   ├── services/
+│   │   └── claude-generator.ts       # AI generation service
 │   ├── utils/
-│   │   ├── generator.ts              # CLAUDE.md generation engine
 │   │   ├── validator.ts              # Content validation
 │   │   └── storage.ts                # localStorage utilities
 │   └── icons/
 │       ├── index.ts                  # Icon exports
 │       ├── download.svelte           # Download icon
-│       ├── copy.svelte               # Copy icon
-│       └── check.svelte              # Check icon
+│       └── copy.svelte               # Copy icon
 └── routes/
     ├── +layout.svelte                # Main layout
-    ├── +page.svelte                  # Configuration wizard
-    └── templates/
-        └── +page.svelte              # Template library page
+    ├── +page.svelte                  # Main interface
+    └── api/
+        └── generate-claude-md/
+            └── +server.ts            # AI generation endpoint
 ```
 
 ## Implementation Phases
 
 ### Phase 1: Core Foundation (Week 1)
 
-**Goal**: Basic project structure and state management
+**Goal**: Conversational interface with AI generation
 
 #### Tasks:
 
-1. **Set up project structure**
-   - Create directory structure
-   - Configure global state management
-   - Set up basic routing
+1. **Update configuration wizard**
+   - Replace multi-step form with conversational questions
+   - Streamline to 3-4 key questions
+   - Focus on gathering context, not detailed configuration
 
-2. **Create global state store** (`src/lib/stores/config.svelte.ts`)
+2. **Implement AI generation service**
+   - Use existing API key infrastructure
+   - Create generation prompt using research findings
+   - Handle API responses and errors
 
-   ```typescript
-   interface ConfigState {
-   	projectName: string;
-   	techStack: TechStack;
-   	commands: Command[];
-   	codeStyle: CodeStyle;
-   	projectStructure: ProjectStructure;
-   	currentStep: number;
-   }
-   ```
+3. **Create preview system**
+   - Real-time preview as user provides context
+   - Show generated CLAUDE.md content
+   - Include validation feedback
 
-3. **Design basic UI components**
-   - Layout structure
-   - Navigation components
-   - Form input components
+### Phase 2: Generation Engine (Week 2)
 
-### Phase 2: Configuration Wizard (Week 2)
-
-**Goal**: Multi-step configuration interface
+**Goal**: High-quality CLAUDE.md generation using AI
 
 #### Tasks:
 
-1. **Create ConfigWizard component**
-   - Step navigation
-   - Form validation
-   - Real-time state updates
+1. **Design generation prompt**
+   - Include research findings as context
+   - Use proven CLAUDE.md patterns
+   - Ensure optimal structure and length
 
-2. **Implement configuration steps**
-   - Step 1: Project basics (name, type)
-   - Step 2: Tech stack selection
-   - Step 3: Development commands
-   - Step 4: Code style preferences
-   - Step 5: Project structure
+2. **Implement API integration**
+   - Use existing API key management
+   - Handle streaming responses
+   - Provide loading states and error handling
 
-3. **Add form validation and error handling**
-
-### Phase 3: Template System (Week 2-3)
-
-**Goal**: Pre-built templates based on research
-
-#### Tasks:
-
-1. **Create template engine** (`src/lib/utils/generator.ts`)
-   - Template interface definition
-   - Generation logic
-   - Content validation
-
-2. **Implement core templates** (based on research findings)
-   - React + TypeScript template
-   - Next.js template
-   - Python project template
-   - SvelteKit template
-   - Generic web app template
-
-3. **Template structure** (following research patterns)
-
-   ```markdown
-   # Project Name
-
-   ## Tech Stack
-
-   ## Development Commands
-
-   ## Code Style
-
-   ## Project Structure
-
-   ## Do Not Touch
-   ```
-
-### Phase 4: Preview and Export (Week 3)
-
-**Goal**: Real-time preview and export functionality
-
-#### Tasks:
-
-1. **Create PreviewPanel component**
-   - Real-time CLAUDE.md generation
-   - Syntax highlighting (simple markdown styling)
-   - Character count and validation
-
-2. **Implement export functionality**
-   - Direct file download
-   - Copy-to-clipboard
-   - Local storage for drafts
-
-3. **Add validation** (`src/lib/utils/validator.ts`)
+3. **Add content validation**
    - Check optimal length (25-250 lines)
    - Validate required sections
    - Best practices compliance
 
-### Phase 5: Polish and Documentation (Week 4)
+### Phase 3: User Experience (Week 3)
 
-**Goal**: Production-ready application
+**Goal**: Polished interface with export functionality
 
 #### Tasks:
 
-1. **Template Library page**
-   - Browse available templates
-   - Template preview
-   - One-click template selection
+1. **Enhance preview panel**
+   - Syntax highlighting for markdown
+   - Copy-to-clipboard functionality
+   - Download as file option
 
-2. **Documentation and help**
-   - Getting started guide
-   - Best practices documentation
-   - Setup instructions for Claude Code
+2. **Add export options**
+   - Direct file download
+   - Copy formatted content
+   - Save drafts to localStorage
 
-3. **Testing and optimization**
-   - Cross-browser compatibility
-   - Performance optimization
-   - Error handling
+3. **Improve error handling**
+   - Clear error messages
+   - Retry functionality
+   - Fallback options
 
 ## Key Technical Decisions
 
+### AI-First Approach
+
+- **Generation over configuration**: Use AI to generate content rather
+  than manual form filling
+- **Context over templates**: Gather context and let AI determine
+  optimal structure
+- **Validation over constraints**: Validate generated content rather
+  than restricting input
+
 ### State Management
 
-- **Global state file**: `src/lib/stores/config.svelte.ts`
+- **Global state file**: `src/lib/state/config.svelte.ts`
 - **Single `$state` rune**: Reactive configuration object
-- **Persistence**: localStorage for drafts and user preferences
+- **Persistence**: localStorage for drafts and preferences
 
-### Template System
+### Generation Process
 
-- **Template as functions**: Generate CLAUDE.md based on configuration
-- **Validation**: Check against research-based best practices
-- **Extensibility**: Easy to add new templates
+1. **Collect context**: Brief questions about role, project, and
+   preferences
+2. **Generate content**: Use AI with research-based prompts
+3. **Validate output**: Check against best practices
+4. **Allow refinement**: Enable user to iterate on generated content
 
-### Security Considerations
+## Conversational Interface Design
 
-- **No BYOK testing initially**: Focus on generation, not API
-  integration
-- **Client-side only**: No server storage of user data
-- **localStorage only**: No external data persistence
+### Key Questions (3-4 total)
 
-## Dependencies
+1. **Role & Project Context**
+   - "Describe your role and the project you're working on"
+   - Captures: Technical role, project type, scale, domain
 
-### Required Packages
+2. **Technology Stack**
+   - "What technologies and tools do you use?"
+   - Captures: Languages, frameworks, databases, deployment
 
-```json
-{
-	"dependencies": {
-		"@sveltejs/kit": "^2.16.0",
-		"svelte": "^5.0.0"
-	},
-	"devDependencies": {
-		"tailwindcss": "^4.0.0",
-		"daisyui": "^5.0.43",
-		"typescript": "^5.0.0"
-	}
-}
+3. **Coding Standards**
+   - "What coding standards and practices are important to you?"
+   - Captures: Style preferences, testing approach, quality standards
+
+4. **Special Requirements** (optional)
+   - "Any specific constraints or requirements?"
+   - Captures: Legacy systems, compliance, team workflows
+
+### Generation Prompt Structure
+
 ```
+You are generating a CLAUDE.md file for a developer. Use the following research-based guidelines:
 
-### Icon Implementation
+[Include key research findings from docs]
 
-- Individual Svelte components in `src/lib/icons/`
-- Props support for customization
-- Consistent styling with TailwindCSS
+User Context:
+- Role: [user input]
+- Project: [user input]
+- Tech Stack: [user input]
+- Standards: [user input]
+- Requirements: [user input]
 
-## Testing Strategy
-
-### Unit Tests
-
-- Template generation logic
-- Validation functions
-- State management utilities
-
-### Integration Tests
-
-- Configuration wizard flow
-- Template selection and generation
-- Export functionality
-
-### Manual Testing
-
-- Cross-browser compatibility
-- Mobile responsiveness
-- User experience flow
+Generate a CLAUDE.md file that:
+- Follows the proven structure from research
+- Is 25-250 lines long
+- Includes specific, actionable guidance
+- Avoids verbose explanations
+- Focuses on what Claude needs to know
+```
 
 ## Success Metrics
 
 ### Technical Metrics
 
-- Page load time < 2 seconds
-- Template generation < 100ms
+- AI generation time < 5 seconds
+- Content quality score > 85%
 - Mobile-responsive design
 - Cross-browser compatibility
 
 ### User Experience Metrics
 
-- Configuration completion rate > 80%
-- Template satisfaction scores
+- Generation completion rate > 90%
+- User satisfaction with generated content
 - Export success rate > 95%
+- Return usage rate
 
 ## Risk Mitigation
 
 ### Technical Risks
 
-- **Browser compatibility**: Test across major browsers
-- **Performance**: Optimize template generation
-- **State management**: Thorough testing of Svelte 5 runes
+- **API reliability**: Implement retry logic and error handling
+- **Content quality**: Use research-based prompts and validation
+- **Performance**: Optimize AI requests and caching
 
 ### User Experience Risks
 
-- **Complexity**: Keep interface simple and intuitive
-- **Template quality**: Base templates on research findings
-- **Validation**: Clear error messages and guidance
+- **Simplicity**: Keep interface minimal and focused
+- **Content relevance**: Ensure generated content is actionable
+- **Iteration**: Allow users to refine generated content
 
-## Future Enhancements (Post-MVP)
+## Future Enhancements
 
 ### Phase 2 Features
 
-- Community template sharing
-- Advanced customization options
+- Template suggestions based on detected patterns
+- Community sharing of successful CLAUDE.md files
 - Integration with popular project scaffolding tools
 
 ### Advanced Features
 
-- BYOK testing integration (with proper security)
+- Multi-agent persona system support
 - Team collaboration features
-- Template versioning and updates
+- Analytics and usage insights
 
 ---
 
-_This implementation plan prioritizes practical utility and follows
-research-based best practices for effective CLAUDE.md generation._
+_This implementation plan focuses on leveraging AI to generate
+high-quality CLAUDE.md files through conversational interaction rather
+than manual configuration._

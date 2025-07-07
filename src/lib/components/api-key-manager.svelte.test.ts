@@ -1,12 +1,12 @@
 import { page } from '@vitest/browser/context';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
-import { reset_api_key_ui_state } from '../state/api-key.svelte.js';
-import { api_key_manager } from '../utils/api-key-manager.js';
+import { reset_api_key_ui_state } from '../state/api-key.svelte';
+import { api_key_manager } from '../utils/api-key-manager';
 import ApiKeyManager from './api-key-manager.svelte';
 
 // Mock the api key manager
-vi.mock('../utils/api-key-manager.js', () => ({
+vi.mock('../utils/api-key-manager', () => ({
 	api_key_manager: {
 		has_api_key: vi.fn(() => false),
 		set_api_key: vi.fn(),

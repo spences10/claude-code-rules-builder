@@ -1,15 +1,15 @@
-# CLAUDE.md Templates Specification
+# AI Generation System for CLAUDE.md Files
 
-## Template System Design
+## Generation Approach
 
-Based on research of real CLAUDE.md files, this specification defines
-the template system for generating effective project-specific
-CLAUDE.md files.
+This system uses AI to generate CLAUDE.md files rather than manual
+template selection. The AI leverages research-based patterns and user
+context to create optimal project-specific files.
 
-## Template Structure (Research-Based)
+## Research-Based Structure
 
-All templates follow this proven structure from successful CLAUDE.md
-files:
+Generated CLAUDE.md files follow this proven structure from successful
+real-world implementations:
 
 ```markdown
 # [Project Name]
@@ -48,409 +48,233 @@ files:
 - [Restriction 2]
 ```
 
-## Template Interface
+## Generation Process
 
-```typescript
-interface CLAUDETemplate {
-	id: string;
-	name: string;
-	description: string;
-	category:
-		| 'frontend'
-		| 'backend'
-		| 'fullstack'
-		| 'mobile'
-		| 'data'
-		| 'cli';
-	tags: string[];
-	generate: (config: ProjectConfig) => string;
-	validate: (content: string) => ValidationResult;
-}
+### Input Collection
 
-interface ProjectConfig {
-	projectName: string;
-	projectDescription?: string;
-	techStack: TechStackConfig;
-	commands: CommandConfig[];
-	codeStyle: CodeStyleConfig;
-	projectStructure: ProjectStructureConfig;
-	customSections?: CustomSection[];
-	restrictions?: string[];
-}
+The system gathers context through 3-4 conversational questions:
 
-interface TechStackConfig {
-	framework: string;
-	language: string;
-	version?: string;
-	database?: string;
-	styling?: string;
-	testing?: string;
-	deployment?: string;
-}
+1. **Role & Project Context**
+   - Developer's technical role and experience level
+   - Project type, scale, and domain
+   - Team structure and collaboration needs
+
+2. **Technology Stack**
+   - Programming languages and frameworks
+   - Databases and infrastructure
+   - Development tools and deployment platforms
+
+3. **Coding Standards**
+   - Style preferences and formatting rules
+   - Testing approaches and quality standards
+   - Documentation and review processes
+
+4. **Special Requirements** (optional)
+   - Legacy system constraints
+   - Compliance requirements
+   - Team-specific workflows
+
+### AI Generation Prompt
+
+The system uses a comprehensive prompt that includes:
+
+```
+You are generating a CLAUDE.md file for a developer using Claude Code.
+
+CONTEXT: CLAUDE.md files are "persistent prompts" that provide project-specific context to Claude Code, reducing repetitive explanations and ensuring consistent AI behavior.
+
+RESEARCH FINDINGS:
+- Files should be 25-250 lines (token budget optimization)
+- Use concise, actionable bullet points
+- Include specific versions and tools
+- Focus on what Claude needs to know, not documentation
+- Follow proven structure: Tech Stack → Commands → Code Style → Project Structure → Restrictions
+
+USER CONTEXT:
+- Role: [user input]
+- Project: [user input]
+- Tech Stack: [user input]
+- Standards: [user input]
+- Requirements: [user input]
+
+Generate a CLAUDE.md file that:
+1. Follows the proven structure
+2. Is concise and actionable (25-250 lines)
+3. Includes specific commands and versions
+4. Provides clear restrictions
+5. Focuses on guidance Claude needs for this specific project
 ```
 
-## Core Templates
+### Output Validation
 
-### 1. React + TypeScript Template
+Generated content is validated against:
 
-**ID**: `react-typescript` **Category**: `frontend` **Tags**:
-`['react', 'typescript', 'frontend', 'spa']`
+1. **Structure Requirements**
+   - Contains essential sections (Tech Stack, Commands, Code Style)
+   - Uses proper markdown formatting
+   - Includes actionable bullet points
 
-**Generated Structure**:
+2. **Length Optimization**
+   - 25-250 lines for token budget efficiency
+   - Warnings for content outside optimal range
+
+3. **Content Quality**
+   - Specific over generic guidance
+   - No verbose explanations
+   - Focuses on actionable instructions
+
+## Common Generation Patterns
+
+### Frontend Projects (React, Vue, Angular)
+
+- Framework-specific component patterns
+- Build tool configurations
+- Styling approach (CSS-in-JS, Tailwind, etc.)
+- Testing strategies for components
+
+### Backend Projects (Node.js, Python, Go)
+
+- API framework patterns
+- Database connection management
+- Environment variable handling
+- Testing strategies for services
+
+### Fullstack Projects (Next.js, SvelteKit, Nuxt)
+
+- Server-side rendering patterns
+- API route conventions
+- Database integration approaches
+- Deployment considerations
+
+### Specialized Projects
+
+- CLI tools: Command structure and distribution
+- Data science: Notebook organization and dependencies
+- Mobile apps: Platform-specific considerations
+- DevOps: Infrastructure as code patterns
+
+## Quality Assurance
+
+### Best Practices Enforcement
+
+Generated files automatically include:
+
+- Command descriptions with backticks
+- Specific version numbers when available
+- Clear directory structure explanations
+- Actionable "Do Not Touch" restrictions
+
+### Anti-Pattern Prevention
+
+The system avoids common mistakes:
+
+- Verbose documentation-style explanations
+- Generic advice that applies to all projects
+- Obvious information (e.g., "components folder contains components")
+- Missing development commands
+
+## Example Generation Outputs
+
+### React TypeScript Project
 
 ```markdown
-# [Project Name]
+# E-commerce Dashboard
 
-React application with TypeScript for type-safe frontend development.
+React TypeScript application for managing online store operations.
 
 ## Tech Stack
 
-- Framework: React 18
-- Language: TypeScript 5.x
-- Styling: [CSS framework]
-- Build Tool: Vite
+- Framework: React 18 with TypeScript 5.x
+- Styling: Tailwind CSS 3.4
+- State Management: Zustand
+- Build Tool: Vite 5.x
 - Testing: Jest + React Testing Library
 
 ## Development Commands
 
-- `npm run dev`: Start development server
+- `npm run dev`: Start development server on localhost:3000
 - `npm run build`: Build for production
 - `npm run test`: Run unit tests
-- `npm run lint`: Run ESLint
-- `npm run type-check`: Run TypeScript compiler
+- `npm run lint`: Run ESLint with TypeScript checking
+- `npm run format`: Format code with Prettier
 
 ## Code Style
 
 - Use functional components with hooks
-- Prefer arrow functions for components
-- Use TypeScript strict mode
+- Prefer TypeScript strict mode
 - Follow conventional commit messages
 - Use absolute imports with @ alias
+- Write tests for business logic components
 
 ## Project Structure
 
 - `src/components/`: Reusable UI components
-- `src/pages/`: Page components
+- `src/pages/`: Page-level components
 - `src/hooks/`: Custom React hooks
-- `src/utils/`: Utility functions
-- `src/types/`: TypeScript type definitions
+- `src/store/`: Zustand store definitions
+- `src/utils/`: Utility functions and helpers
 
 ## Do Not Touch
 
-- Do not modify files in `public/` directory
-- Do not commit without running lint and type-check
+- Do not modify public/index.html without approval
+- Do not commit without running lint and tests
+- Do not bypass TypeScript strict mode
 ```
 
-### 2. Next.js Template
-
-**ID**: `nextjs` **Category**: `fullstack` **Tags**:
-`['nextjs', 'react', 'typescript', 'fullstack', 'ssr']`
-
-**Generated Structure** (based on danielbergholz/bergdaniel.com.br):
+### Python FastAPI Project
 
 ```markdown
-# [Project Name]
+# Customer API Service
 
-Next.js application with App Router and TypeScript.
+FastAPI microservice for customer data management with PostgreSQL.
 
 ## Tech Stack
 
-- Framework: Next.js 15
-- Language: TypeScript 5.x
-- Styling: Tailwind CSS
-- Database: [Database choice]
-- Deployment: Vercel
+- Language: Python 3.11
+- Framework: FastAPI 0.104
+- Database: PostgreSQL 15 with SQLAlchemy
+- Testing: pytest with httpx
+- Package Manager: uv
 
 ## Development Commands
 
-- `npm run dev`: Start development server on http://localhost:3000
-- `npm run build`: Build for production
-- `npm run format`: Format code with Prettier
-- `npm run lint`: Run ESLint and type checking
-- `npm run check`: Run lint and typecheck (run before committing)
-
-**IMPORTANT**: After code changes, always run:
-
-1. `npm run format` - Format the code
-2. `npm run check` - Verify no errors
-
-## Code Style
-
-- Use App Router patterns (not Pages Router)
-- Prefer Server Components when possible
-- Use TypeScript strict mode
-- Follow conventional commit messages
-- Use absolute imports with @ alias
-
-## Project Structure
-
-- `src/app/`: Next.js App Router pages and layouts
-- `src/components/`: Reusable UI components
-- `src/lib/`: Utilities and API clients
-- `src/types/`: TypeScript type definitions
-
-## Do Not Touch
-
-- Do not modify Next.js configuration files without team approval
-- Do not commit directly to main branch
-```
-
-### 3. Python Project Template
-
-**ID**: `python` **Category**: `backend` **Tags**:
-`['python', 'backend', 'api']`
-
-**Generated Structure**:
-
-```markdown
-# [Project Name]
-
-Python project using modern development practices.
-
-## Tech Stack
-
-- Language: Python 3.11+
-- Package Manager: uv (recommended) or pip
-- Framework: [FastAPI/Django/Flask]
-- Database: [Database choice]
-- Testing: pytest
-
-## Development Commands
-
-- `uv run main.py`: Start development server
-- `uv run pytest`: Run test suite
+- `uv run main.py`: Start development server on localhost:8000
+- `uv run pytest`: Run full test suite
 - `uv run ruff check`: Run linting
 - `uv run ruff format`: Format code
-- `uv add package-name`: Add new dependency
+- `uv run mypy .`: Type checking
 
 ## Code Style
 
-- Follow PEP 8 style guidelines
 - Use type hints for all functions
-- Prefer f-strings for string formatting
+- Follow PEP 8 guidelines
+- Prefer f-strings for formatting
+- Write docstrings for public APIs
 - Use descriptive variable names
-- Write docstrings for public functions
 
 ## Project Structure
 
-- `src/`: Main application code
-- `tests/`: Test files
-- `requirements.txt` or `pyproject.toml`: Dependencies
-- `README.md`: Project documentation
+- `src/api/`: FastAPI route handlers
+- `src/models/`: SQLAlchemy models
+- `src/services/`: Business logic layer
+- `tests/`: Test files matching src structure
+- `migrations/`: Database migration files
 
 ## Environment Setup
 
 - Python 3.11+ required
-- Use virtual environment: `python -m venv venv`
-- Install dependencies: `pip install -r requirements.txt`
+- PostgreSQL 15+ for database
+- Copy .env.example to .env and configure
 
 ## Do Not Touch
 
-- Do not modify .gitignore without team approval
-- Do not commit without running tests and linting
+- Do not modify database schema directly
+- Do not commit without running tests
+- Do not expose internal IDs in API responses
 ```
-
-### 4. SvelteKit Template
-
-**ID**: `sveltekit` **Category**: `fullstack` **Tags**:
-`['svelte', 'sveltekit', 'typescript', 'fullstack']`
-
-**Generated Structure**:
-
-```markdown
-# [Project Name]
-
-SvelteKit application with TypeScript and modern tooling.
-
-## Tech Stack
-
-- Framework: SvelteKit 2.x
-- Language: TypeScript 5.x
-- Styling: TailwindCSS
-- Build Tool: Vite
-- Testing: Vitest + Playwright
-
-## Development Commands
-
-- `npm run dev`: Start development server
-- `npm run build`: Build for production
-- `npm run preview`: Preview production build
-- `npm run test`: Run unit tests
-- `npm run test:e2e`: Run end-to-end tests
-- `npm run lint`: Run ESLint and Prettier
-
-## Code Style
-
-- Use Svelte 5 runes for reactivity
-- Prefer TypeScript for all files
-- Follow conventional commit messages
-- Use absolute imports with $lib alias
-- Write component props with TypeScript interfaces
-
-## Project Structure
-
-- `src/routes/`: SvelteKit pages and layouts
-- `src/lib/`: Reusable components and utilities
-- `src/app.html`: App shell template
-- `static/`: Static assets
-
-## Do Not Touch
-
-- Do not modify svelte.config.js without team approval
-- Do not commit without running lint and tests
-```
-
-### 5. Generic Web App Template
-
-**ID**: `generic-webapp` **Category**: `frontend` **Tags**:
-`['generic', 'webapp', 'starter']`
-
-**Generated Structure**:
-
-```markdown
-# [Project Name]
-
-Modern web application following current best practices.
-
-## Tech Stack
-
-- Language: [Selected language]
-- Framework: [Selected framework]
-- Styling: [Selected styling approach]
-- Build Tool: [Selected build tool]
-
-## Development Commands
-
-- `[dev command]`: Start development server
-- `[build command]`: Build for production
-- `[test command]`: Run tests
-- `[lint command]`: Run linting
-
-## Code Style
-
-- [Framework-specific style guidelines]
-- Use consistent naming conventions
-- Write meaningful commit messages
-- Include documentation for complex functions
-
-## Project Structure
-
-- `[source directory]/`: Main application code
-- `[components directory]/`: Reusable components
-- `[utils directory]/`: Utility functions
-
-## Do Not Touch
-
-- [Project-specific restrictions]
-```
-
-## Template Categories
-
-### Frontend Templates
-
-- React + TypeScript
-- Vue.js + TypeScript
-- Angular
-- Vanilla JavaScript
-- Static Site Generators (Astro, 11ty)
-
-### Backend Templates
-
-- Node.js + Express
-- Python + FastAPI
-- Python + Django
-- Go + Gin
-- Rust + Axum
-
-### Fullstack Templates
-
-- Next.js
-- SvelteKit
-- Remix
-- T3 Stack
-- MEAN/MERN Stack
-
-### Mobile Templates
-
-- React Native
-- Flutter
-- Swift (iOS)
-- Kotlin (Android)
-
-### Data & ML Templates
-
-- Jupyter Notebook
-- Python Data Science
-- R Projects
-- Machine Learning
-
-### CLI & Tools Templates
-
-- Node.js CLI
-- Python CLI
-- Go CLI
-- Rust CLI
-
-## Template Validation Rules
-
-### Content Requirements
-
-1. **Required sections**: Tech Stack, Development Commands, Code Style
-2. **Optimal length**: 25-250 lines (based on research)
-3. **Command format**: All commands must use backticks and include
-   descriptions
-4. **Structure clarity**: Use bullet points and clear headings
-
-### Quality Checks
-
-1. **No verbose descriptions**: Keep content concise and actionable
-2. **Specific over generic**: Include specific versions and tools
-3. **Actionable instructions**: Every line should provide actionable
-   guidance
-4. **Team-focused**: Include collaborative elements (commit messages,
-   workflows)
-
-### Anti-Patterns to Avoid
-
-1. **Long paragraphs**: Use bullet points instead
-2. **Obvious explanations**: Don't explain what's obvious from
-   directory names
-3. **Generic advice**: Provide project-specific guidance
-4. **Missing restrictions**: Include "Do Not Touch" section when
-   relevant
-
-## Template Generation Algorithm
-
-```typescript
-function generateCLAUDEmd(
-	template: CLAUDETemplate,
-	config: ProjectConfig,
-): string {
-	const sections = [
-		generateHeader(config.projectName, config.projectDescription),
-		generateTechStack(config.techStack),
-		generateCommands(config.commands),
-		generateCodeStyle(config.codeStyle),
-		generateProjectStructure(config.projectStructure),
-		...generateCustomSections(config.customSections || []),
-		generateRestrictions(config.restrictions || []),
-	];
-
-	return sections.filter(Boolean).join('\n\n');
-}
-```
-
-## Template Extension System
-
-Templates can be extended with:
-
-- **Custom sections**: Domain-specific content
-- **Tool integrations**: MCP servers, browser automation
-- **Team workflows**: Git conventions, review processes
-- **Environment setup**: Installation and configuration instructions
 
 ---
 
-_This specification ensures all templates follow research-based best
-practices for effective CLAUDE.md files that improve Claude Code
-assistance quality._
+_This system ensures consistent, high-quality CLAUDE.md generation
+through AI-powered analysis of user context and application of
+research-based best practices._
