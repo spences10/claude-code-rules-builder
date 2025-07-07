@@ -132,17 +132,23 @@ export class ApiKeyManager {
 	}
 
 	async test_api_key(): Promise<boolean> {
-		if (!this.anthropic_api) {
+		if (!this.api_key) {
 			return false;
 		}
 
 		try {
-			await this.anthropic_api.generate_persona(
-				'Test message to validate API key. Please respond with "API key is valid."',
-			);
-			return true;
+			const response = await fetch('/api/test-key', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ api_key: this.api_key }),
+			});
+
+			const data = await response.json();
+			return data.success && data.valid;
 		} catch (error) {
-			console.warn('API key test failed:', error);
+			console.error('API key test failed with error:', error);
 			return false;
 		}
 	}

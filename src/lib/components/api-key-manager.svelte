@@ -4,6 +4,8 @@
 		clear_api_key_error,
 		reset_api_key_ui_state,
 		set_api_key_error,
+		set_api_key_success,
+		clear_api_key_success,
 		set_test_result,
 		set_testing_state,
 	} from '../state/api-key.svelte.js';
@@ -29,6 +31,7 @@
 		try {
 			api_key_manager.set_api_key(api_key);
 			api_key = '';
+			set_api_key_success();
 		} catch (err) {
 			set_api_key_error(
 				err instanceof Error ? err.message : 'Failed to set API key',
@@ -39,7 +42,7 @@
 	}
 
 	async function test_api_key(): Promise<void> {
-		if (!api_key_manager.has_api_key()) {
+		if (!api_key_ui_state.has_key) {
 			set_api_key_error('No API key set');
 			return;
 		}
@@ -49,7 +52,12 @@
 
 		try {
 			const is_valid = await api_key_manager.test_api_key();
-			set_test_result(is_valid ? 'success' : 'error');
+			if (is_valid) {
+				set_test_result('success');
+			} else {
+				set_test_result('error');
+				set_api_key_error('API key test failed. Check browser console for details.');
+			}
 		} catch (err) {
 			set_test_result('error');
 			set_api_key_error(
@@ -63,7 +71,7 @@
 	function clear_api_key(): void {
 		api_key_manager.clear_api_key();
 		api_key = '';
-		reset_api_key_ui_state();
+		clear_api_key_success();
 	}
 
 	function handle_key_press(event: KeyboardEvent): void {
@@ -73,6 +81,11 @@
 	}
 
 	const security_info = api_key_manager.get_security_info();
+
+	// Initialize state based on existing API key
+	if (api_key_manager.has_api_key()) {
+		set_api_key_success();
+	}
 </script>
 
 <div class="card bg-base-100 shadow-xl">
@@ -82,7 +95,7 @@
 			Anthropic API Key
 		</h2>
 
-		{#if api_key_manager.has_api_key()}
+		{#if api_key_ui_state.has_key}
 			<div class="alert alert-success">
 				<span class="text-sm">✅ API key is configured</span>
 			</div>

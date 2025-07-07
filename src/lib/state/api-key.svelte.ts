@@ -1,4 +1,5 @@
 interface ApiKeyUiState {
+	has_key: boolean;
 	is_testing: boolean;
 	test_result: 'success' | 'error' | null;
 	error: string;
@@ -6,6 +7,7 @@ interface ApiKeyUiState {
 
 function create_default_api_key_ui_state(): ApiKeyUiState {
 	return {
+		has_key: false,
 		is_testing: false,
 		test_result: null,
 		error: '',
@@ -32,6 +34,17 @@ export function set_test_result(
 	result: 'success' | 'error' | null,
 ): void {
 	api_key_ui_state.test_result = result;
+}
+
+export function set_api_key_success(): void {
+	api_key_ui_state.has_key = true;
+	api_key_ui_state.error = '';
+}
+
+export function clear_api_key_success(): void {
+	api_key_ui_state.has_key = false;
+	api_key_ui_state.test_result = null;
+	api_key_ui_state.error = '';
 }
 
 export function reset_api_key_ui_state(): void {
