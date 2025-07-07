@@ -112,12 +112,10 @@
 		</h2>
 
 		<!-- Step Progress -->
-		<div class="steps steps-horizontal mb-8 w-full">
+		<div class="steps steps-horizontal mb-8 w-full overflow-x-auto">
 			{#each step_titles as title, index}
 				<div
-					class="step {index <= config_state.current_step
-						? 'step-primary'
-						: ''}"
+					class="step"
 					class:step-primary={index <= config_state.current_step}
 				>
 					{title}
@@ -148,7 +146,9 @@
 							placeholder="e.g., Always write tests, use TypeScript strict mode, follow conventional commits, never compromise on accessibility..."
 							bind:value={config_state.universal_principles}
 							oninput={(e) =>
-								update_universal_principles(e.target.value)}
+								update_universal_principles(
+									(e.target as HTMLTextAreaElement).value,
+								)}
 						></textarea>
 						<div class="label">
 							<span class="label-text-alt">
@@ -190,7 +190,7 @@
 								{/if}
 							</div>
 
-							<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+							<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 								<div class="form-control">
 									<label class="label" for="persona-name-{index}">
 										<span class="label-text">Persona Name *</span>
@@ -199,15 +199,25 @@
 										id="persona-name-{index}"
 										type="text"
 										class="input input-bordered"
+										class:input-error={persona.name.trim() === ''}
 										placeholder="e.g., Rusty, Francis, Trinity"
 										value={persona.name}
+										aria-required="true"
+										aria-describedby="persona-name-help-{index}"
 										oninput={(e) =>
 											handle_persona_update(
 												index,
 												'name',
-												e.target.value,
+												(e.target as HTMLInputElement).value,
 											)}
 									/>
+									{#if persona.name.trim() === ''}
+										<div class="label">
+											<span class="label-text-alt text-error">
+												Persona name is required
+											</span>
+										</div>
+									{/if}
 								</div>
 
 								<div class="form-control">
@@ -218,15 +228,25 @@
 										id="persona-role-{index}"
 										type="text"
 										class="input input-bordered"
+										class:input-error={persona.role.trim() === ''}
 										placeholder="e.g., Backend Engineer, Frontend Architect, QA Engineer"
 										value={persona.role}
+										aria-required="true"
+										aria-describedby="persona-role-help-{index}"
 										oninput={(e) =>
 											handle_persona_update(
 												index,
 												'role',
-												e.target.value,
+												(e.target as HTMLInputElement).value,
 											)}
 									/>
+									{#if persona.role.trim() === ''}
+										<div class="label">
+											<span class="label-text-alt text-error">
+												Expert role is required
+											</span>
+										</div>
+									{/if}
 								</div>
 
 								<div class="form-control">
@@ -241,7 +261,7 @@
 											handle_persona_update(
 												index,
 												'expertise_level',
-												e.target.value,
+												(e.target as HTMLSelectElement).value,
 											)}
 									>
 										<option value="junior">Junior</option>
@@ -269,7 +289,7 @@
 											handle_persona_update(
 												index,
 												'communication_style',
-												e.target.value,
+												(e.target as HTMLInputElement).value,
 											)}
 									/>
 								</div>
@@ -290,7 +310,7 @@
 										handle_persona_update(
 											index,
 											'core_principles',
-											e.target.value,
+											(e.target as HTMLTextAreaElement).value,
 										)}
 								></textarea>
 							</div>
@@ -308,7 +328,7 @@
 										handle_persona_update(
 											index,
 											'tech_expertise',
-											e.target.value,
+											(e.target as HTMLTextAreaElement).value,
 										)}
 								></textarea>
 							</div>
@@ -328,7 +348,7 @@
 										handle_persona_update(
 											index,
 											'specific_standards',
-											e.target.value,
+											(e.target as HTMLTextAreaElement).value,
 										)}
 								></textarea>
 							</div>
@@ -355,7 +375,10 @@
 							class="textarea textarea-bordered h-40"
 							placeholder="Describe your project: What does it do? What industry/domain? What's the technical architecture? What are the business constraints? What's the team structure?"
 							bind:value={config_state.project_context}
-							oninput={(e) => update_project_context(e.target.value)}
+							oninput={(e) =>
+								update_project_context(
+									(e.target as HTMLTextAreaElement).value,
+								)}
 						></textarea>
 						<div class="label">
 							<span class="label-text-alt">
@@ -387,7 +410,10 @@
 							class="textarea textarea-bordered h-40"
 							placeholder="When should each persona activate? e.g., 'Use Rusty for backend/API work, Francis for frontend/UI tasks, Trinity when discussing testing...' Include default persona and context switching rules."
 							bind:value={config_state.activation_rules}
-							oninput={(e) => update_activation_rules(e.target.value)}
+							oninput={(e) =>
+								update_activation_rules(
+									(e.target as HTMLTextAreaElement).value,
+								)}
 						></textarea>
 						<div class="label">
 							<span class="label-text-alt">
