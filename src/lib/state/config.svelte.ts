@@ -13,13 +13,18 @@ export interface ConfigState {
 	// Step 1: Universal Principles
 	universal_principles: string;
 
-	// Step 2: Persona Definition
+	// Step 2: Project Information
+	project_description: string;
+	tech_stack: string;
+	development_commands: string;
+
+	// Step 3: Persona Definition
 	personas: persona[];
 
-	// Step 3: Project Context
+	// Step 4: Project Context
 	project_context: string;
 
-	// Step 4: Persona Activation Rules
+	// Step 5: Persona Activation Rules
 	activation_rules: string;
 
 	// Generation state
@@ -45,6 +50,9 @@ function create_default_persona(): persona {
 function create_default_config(): ConfigState {
 	return {
 		universal_principles: '',
+		project_description: '',
+		tech_stack: '',
+		development_commands: '',
 		personas: [create_default_persona()],
 		project_context: '',
 		activation_rules: '',

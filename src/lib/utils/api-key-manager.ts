@@ -87,7 +87,10 @@ export class ApiKeyManager {
 	private static instance: ApiKeyManager;
 	private api_key: string | null = null;
 
-	private constructor() {}
+	private constructor() {
+		// Hardcoded for testing - replace with your actual API key
+		this.api_key = 'sk-ant-api03-your-api-key-here';
+	}
 
 	static get_instance(): ApiKeyManager {
 		if (!ApiKeyManager.instance) {
