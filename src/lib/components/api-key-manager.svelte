@@ -91,17 +91,24 @@
 
 <div class="card bg-base-100 shadow-xl">
 	<div class="card-body">
-		<h2 class="card-title">
-			<span class="text-2xl">🔑</span>
-			Anthropic API Key
-		</h2>
+		<div class="text-center mb-6">
+			<div class="text-4xl mb-2">🔐</div>
+			<h2 class="text-2xl font-bold">Step 0: Connect Your API Key</h2>
+			<p class="text-base-content/60 text-sm mt-2">
+				First, let's securely connect your Anthropic API key to enable persona generation
+			</p>
+		</div>
 
 		{#if api_key_ui_state.has_key}
-			<div class="alert alert-success">
-				<span class="text-sm">✅ API key is configured</span>
+			<div class="alert alert-success text-center">
+				<div>
+					<div class="text-2xl mb-2">✅</div>
+					<div class="font-semibold">API Key Successfully Connected!</div>
+					<div class="text-sm opacity-70">You're ready to proceed to the next step</div>
+				</div>
 			</div>
 
-			<div class="flex gap-2">
+			<div class="flex justify-center gap-2">
 				<button
 					class="btn btn-outline btn-sm"
 					onclick={test_api_key}
@@ -111,7 +118,7 @@
 						<span class="loading loading-spinner loading-xs"></span>
 						Testing...
 					{:else}
-						Test Key
+						🔍 Test Key
 					{/if}
 				</button>
 
@@ -119,7 +126,7 @@
 					class="btn btn-outline btn-error btn-sm"
 					onclick={clear_api_key}
 				>
-					Clear Key
+					🗑️ Clear Key
 				</button>
 			</div>
 
@@ -133,22 +140,30 @@
 				</div>
 			{/if}
 		{:else}
-			<p class="text-base-content/70 text-sm">
-				To generate intelligent personas, you need to provide your
-				Anthropic API key. Your key is stored securely in memory only
-				and never persisted.
-			</p>
+			<!-- Security info moved up for visibility -->
+			<div class="bg-base-200 rounded-lg p-4 mb-6">
+				<div class="flex items-center gap-2 mb-3">
+					<div class="text-xl">🔒</div>
+					<div class="font-semibold">Your Security is Our Priority</div>
+				</div>
+				<div class="text-sm text-base-content/70 space-y-2">
+					<p>• Your API key is stored securely in memory only</p>
+					<p>• Never persisted to disk or sent to our servers</p>
+					<p>• Only used to communicate directly with Anthropic</p>
+				</div>
+			</div>
 
 			<div class="form-control w-full">
 				<label class="label" for="api-key-input">
-					<span class="label-text">API Key</span>
+					<span class="label-text font-medium">Enter Your Anthropic API Key</span>
 				</label>
-				<div class="join">
+				<div class="join w-full">
 					<input
 						id="api-key-input"
 						type={is_visible ? 'text' : 'password'}
-						placeholder="sk-ant-..."
+						placeholder="sk-ant-api03-..."
 						class="input input-bordered join-item flex-1"
+						class:input-error={api_key_ui_state.error}
 						bind:value={api_key}
 						onkeypress={handle_key_press}
 						disabled={is_loading}
@@ -157,61 +172,61 @@
 						class="btn btn-outline join-item"
 						onclick={toggle_visibility}
 						type="button"
+						aria-label={is_visible ? 'Hide API key' : 'Show API key'}
 					>
 						{is_visible ? '🙈' : '👁️'}
+					</button>
+					<button
+						class="btn btn-primary join-item"
+						onclick={set_api_key}
+						disabled={is_loading || !api_key.trim()}
+					>
+						{#if is_loading}
+							<span class="loading loading-spinner loading-sm"></span>
+							Setting...
+						{:else}
+							Connect
+						{/if}
 					</button>
 				</div>
 				{#if api_key_ui_state.error}
 					<div class="label">
 						<span class="label-text-alt text-error">
-							{api_key_ui_state.error}
+							❌ {api_key_ui_state.error}
 						</span>
 					</div>
 				{/if}
 			</div>
-
-			<div class="card-actions justify-end">
-				<button
-					class="btn btn-primary"
-					onclick={set_api_key}
-					disabled={is_loading || !api_key.trim()}
-				>
-					{#if is_loading}
-						<span class="loading loading-spinner loading-sm"></span>
-						Setting Key...
-					{:else}
-						Set API Key
-					{/if}
-				</button>
-			</div>
 		{/if}
 
-		<!-- Security Information -->
-		<div class="collapse-arrow bg-base-200 collapse">
-			<input type="checkbox" />
-			<div class="collapse-title text-sm font-medium">
-				🔒 Security Information
-			</div>
-			<div class="collapse-content">
-				<div class="space-y-2 text-xs">
-					<p>
-						<strong>Storage:</strong>
-						{security_info.storage_method}
-					</p>
-					<p>
-						<strong>Data Stored:</strong>
-						{security_info.data_stored}
-					</p>
-					<div>
-						<strong>Security Recommendations:</strong>
-						<ul class="mt-1 list-inside list-disc space-y-1">
-							{#each security_info.recommendations as recommendation, index (index)}
-								<li>{recommendation}</li>
-							{/each}
-						</ul>
+		<!-- Additional Security Details (collapsed) -->
+		{#if !api_key_ui_state.has_key}
+			<div class="collapse-arrow bg-base-200 collapse mt-4">
+				<input type="checkbox" />
+				<div class="collapse-title text-sm font-medium">
+					🔒 Additional Security Details
+				</div>
+				<div class="collapse-content">
+					<div class="space-y-2 text-xs">
+						<p>
+							<strong>Storage:</strong>
+							{security_info.storage_method}
+						</p>
+						<p>
+							<strong>Data Stored:</strong>
+							{security_info.data_stored}
+						</p>
+						<div>
+							<strong>Security Recommendations:</strong>
+							<ul class="mt-1 list-inside list-disc space-y-1">
+								{#each security_info.recommendations as recommendation, index (index)}
+									<li>{recommendation}</li>
+								{/each}
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 </div>

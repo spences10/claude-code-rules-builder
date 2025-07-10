@@ -107,9 +107,15 @@
 
 <div class="card bg-base-100 shadow-xl">
 	<div class="card-body">
-		<h2 class="card-title mb-4 text-2xl">
-			Configure Your CLAUDE.md Personas
-		</h2>
+		<div class="mb-6 text-center">
+			<h2 class="mb-2 text-2xl font-bold">
+				Configure Your CLAUDE.md Personas
+			</h2>
+			<p class="text-base-content/60 text-sm">
+				Complete these steps to create your personalized AI assistant
+				system
+			</p>
+		</div>
 
 		<!-- Step Progress -->
 		<div class="steps steps-horizontal mb-8 w-full overflow-x-auto">
@@ -134,16 +140,16 @@
 						practices that apply to all code?
 					</p>
 
-					<div class="form-control">
-						<label class="label" for="universal-principles">
-							<span class="label-text"
-								>Core Standards & Quality Principles *</span
-							>
-						</label>
+					<label class="form-control w-full">
+						<div class="label mb-2">
+							<span class="label-text font-medium">
+								Core Standards & Quality Principles *
+							</span>
+						</div>
 						<textarea
 							id="universal-principles"
-							class="textarea textarea-bordered h-32"
-							placeholder="e.g., Always write tests, use TypeScript strict mode, follow conventional commits, never compromise on accessibility..."
+							class="textarea h-48 w-full text-base leading-relaxed"
+							placeholder="• Always write comprehensive tests&#10;• Use TypeScript strict mode&#10;• Follow conventional commit messages&#10;• Never compromise on accessibility&#10;• Code reviews are mandatory&#10;• Performance is a feature&#10;• Document architectural decisions"
 							bind:value={config_state.universal_principles}
 							oninput={(e) =>
 								update_universal_principles(
@@ -155,7 +161,7 @@
 								These rules apply to all personas and contexts
 							</span>
 						</div>
-					</div>
+					</label>
 				</div>
 			{:else if config_state.current_step === 1}
 				<!-- Step 2: Expert Personas -->
